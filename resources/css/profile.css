@@ -1,0 +1,79 @@
+.profile-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    background-color: #4f46e5; /* Primary Indigo */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 1.5rem 0;
+}
+
+.info-group {
+    text-align: left;
+    margin-bottom: 1.2rem;
+}
+
+.info-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.info-group p {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-btn {
+    background-color: #4f46e5;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.edit-btn:hover {
+    background-color: #4338ca;
+}
+
+.logout-link {
+    background: none;
+    border: none;
+    color: #e3342f;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: underline;
+}

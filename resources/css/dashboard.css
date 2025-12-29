@@ -1,0 +1,21 @@
+/* Sidebar specific styling */
+aside .icon {
+    font-size: 1.2rem;
+    width: 20px;
+}
+
+/* Custom shadow for doctor cards */
+.doctor-row {
+    transition: all 0.3s ease;
+}
+
+.doctor-row:hover {
+    border-color: #3b82f6;
+    background-color: #f8fafc;
+}
+
+/* Image adjustments to match the design */
+img {
+    filter: brightness(0.95);
+    border: 1px solid #e2e8f0;
+}

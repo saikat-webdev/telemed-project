@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\User;
+
+class LoginController extends Controller
+{
+    public function register(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // dd($request->all());
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'username' => 'required|string|min:5',
+            ]);
+            // dd($request->all());
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'username' => $request->username,
+                'password' => bcrypt($request->password)
+            ]);
+            $user->assignRole('patient');
+
+            return redirect('/login')->with('success', 'Registration successful!');
+        }
+
+        return view('auth.register');
+    }
+
+    public function login(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $credentials = $request->only('email', 'password');
+
+            if (auth()->attempt($credentials)) {
+                // dd("User found");
+                return redirect()->intended('/user');
+            }
+
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->withInput();
+        }
+
+        return view('auth.login');
+    }
+}
