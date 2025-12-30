@@ -1,14 +1,22 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 
+Route::get('/', function () {
+        return redirect()->route('dashboard.index');
+});
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/', [DashboardController::class, 'index']);
-    Route::get('/user', [UserController::class, 'index'])->name('user.index')->middleware('auth');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('auth');
+    Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+    Route::post('/appointments', [App\Http\Controllers\AppointmentController::class, 'store'])->name('appointments.store');
+    Route::get('/patient/chat/{doctor}', [MessageController::class, 'showDoctorMsg'])->name('patients.messages.show');
+    Route::post('/patient/chat/{doctor}', [MessageController::class, 'storeDoctorMsg'])->name('patients.messages.store');
 });
 
 
