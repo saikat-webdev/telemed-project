@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Patient;
 
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 use Illuminate\Container\Attributes\Auth;
 
-class AppointmentController extends Controller
+class AppointmentController extends \App\Http\Controllers\Controller
 {
     /**
      * Store a newly created appointment in storage.
@@ -14,7 +14,7 @@ class AppointmentController extends Controller
     public function index()
     {
         $appointments = Appointment::where('patient_id', auth()->id())->get();
-        return view('appointments.index')->with('appointments', $appointments);
+        return view('patient.appointments.index')->with('appointments', $appointments);
     }
     public function store(Request $request)
     {
@@ -36,7 +36,7 @@ class AppointmentController extends Controller
         $appointment->status = 0;
         $appointment->save();
 
-        return redirect()->route('dashboard.index')->with('success', 'Appointment booked successfully.');
+        return redirect()->route('patient.dashboard.index')->with('success', 'Appointment booked successfully.');
     }
     
 }

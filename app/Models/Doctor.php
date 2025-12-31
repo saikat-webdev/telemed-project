@@ -18,4 +18,9 @@ class Doctor extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(DoctorCategory::class, 'specialization', 'id');
+    }
 }

@@ -15,18 +15,25 @@ class Appointment extends Model
         'appointment_time',
         'comment',
         'status',
+        'transaction_id'
     ];
 
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Doctor::class, 'doctor_id', 'id');
     }
 
     public function patient()
     {
-        return $this->belongsTo(User::class, 'patient_id');
+        return $this->belongsTo(User::class, 'patient_id', 'id');
     }
 
+    public function review()
+    {
+        return $this->hasOne(AppointmentReview::class);
+    }
+    
+    //accessors
     protected function statusLabel(): Attribute
     {
         return Attribute::make(
@@ -34,7 +41,9 @@ class Appointment extends Model
                 return match($this->status) {
                     0 => 'Pending',
                     1 => 'Confirmed',
-                    2 => 'Cancelled',
+                    2 => 'Fees Paid',
+                    3 => 'Completed',
+                    4 => 'Cancelled',
                     default => 'Unknown',
                 };
             }
@@ -47,7 +56,7 @@ class Appointment extends Model
             get: fn () => match($this->status) {
                 0 => 'bg-yellow-100 text-yellow-700',
                 1 => 'bg-green-100 text-green-700',
-                2 => 'bg-red-100 text-red-700',
+                4 => 'bg-red-100 text-red-700',
                 default => 'bg-gray-100 text-gray-700',
             }
         );

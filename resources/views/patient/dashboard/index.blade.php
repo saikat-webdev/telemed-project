@@ -1,4 +1,4 @@
-@extends('layout.dashboard')
+@extends('patient.layout.dashboard')
 
 @section('title', 'Dashboard | TeleHealth')
 
@@ -64,11 +64,11 @@
                     @foreach($doctors as $doctor)
                     <div class="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:shadow-md transition-shadow">
                         <div class="flex items-center gap-4">
-                            <img src="https://i.pravatar.cc/150?u={{ $doctor->id }}" alt="Doctor" class="w-16 h-16 rounded-lg object-cover bg-gray-100">
+                            <img src="https://i.pravatar.cc/150?u={{ $doctor->name }}" alt="Doctor" class="w-16 h-16 rounded-lg object-cover bg-gray-100">
                             <div>
                                 <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full uppercase font-bold">Online</span>
                                 <h4 class="font-bold text-gray-800 mt-1">{{ $doctor->name }}</h4>
-                                <p class="text-gray-500 text-sm">{{ $doctor->specialization ?? 'General Physician' }}</p>
+                                <p class="text-gray-500 text-sm">{{ $doctor->category->name }}</p>
                                 <div class="text-yellow-500 text-xs mt-1">⭐⭐⭐⭐⭐ <span class="text-gray-400">({{ rand(10, 100) }} reviews)</span></div>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                             <p class="text-gray-500 text-sm">Booking for <span class="text-blue-600 font-semibold" x-text="selectedDoctorName"></span></p>
                         </div>
 
-                        <form action="{{ route('appointments.store') }}" method="POST" class="space-y-5">
+                        <form action="{{ route('patient.appointments.store') }}" method="POST" class="space-y-5">
                             @csrf
                             {{-- This hidden input now gets the correct ID via Alpine --}}
                             <input type="hidden" name="doctor_id" :value="selectedDoctorId">

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Patient;
 
 use Illuminate\Http\Request;
 use App\Models\Doctor;
 
-class DashboardController extends Controller
+class DashboardController extends \App\Http\Controllers\Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class DashboardController extends Controller
         // dd($role);
         if($role == 'patient'){
             $doctors = Doctor::all()->take(3);
-            return view('dashboard.index')->with('doctors', $doctors);
+            return view('patient.dashboard.index')->with('doctors', $doctors);
         }
-        return view('dashboard.index');
+        return view('patient.dashboard.index');
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Patient;
 
 use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Message;
 use Illuminate\Http\Request;
 
-class MessageController extends Controller
+class MessageController extends \App\Http\Controllers\Controller
 {
     public function showDoctorMsg(Doctor $doctor)
     {
@@ -23,7 +23,7 @@ class MessageController extends Controller
         ->orderBy('created_at', 'asc')
         ->get();
 
-        return view('messages.chat', compact('doctor', 'messages'));
+        return view('patient.messages.chat', compact('doctor', 'messages'));
     }
 
     public function storeDoctorMsg(Request $request, User $doctor)

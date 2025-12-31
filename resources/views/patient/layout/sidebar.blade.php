@@ -6,9 +6,9 @@
 
             <nav class="flex-1 p-4">
                 <ul class="space-y-2">
-                    <li><a href="{{ route('dashboard.index') }}" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700 @if(request()->is('dashboard')) bg-gray-700 @endif"><i class="icon">🏠</i> Dashboard</a></li>
-                    <li><a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700"><i class="icon">🔍</i> Find Doctors</a></li>
-                    <li><a href="{{ route('appointments.index') }}" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700 @if(request()->is('appointments')) bg-gray-700 @endif"><i class="icon">📅</i> My Appointments</a></li>
+                    <li><a href="{{ route('patient.dashboard.index') }}" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700 @if(request()->is('patient/dashboard')) bg-gray-700 @endif"><i class="icon">🏠</i> Dashboard</a></li>
+                    <li><a href="{{ route('patient.doctors.index') }}" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700 @if(request()->is('patient/doctors')) bg-gray-700 @endif"><i class="icon">🔍</i> Find Doctors</a></li>
+                    <li><a href="{{ route('patient.appointments.index') }}" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700 @if(request()->is('patient/appointments')) bg-gray-700 @endif"><i class="icon">📅</i> My Appointments</a></li>
                     <li><a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700"><i class="icon">📄</i> Medical Records</a></li>
                     <li><a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-gray-700"><i class="icon">⚙️</i> Settings</a></li>
                 </ul>

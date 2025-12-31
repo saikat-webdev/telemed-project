@@ -1,4 +1,4 @@
-@extends('layout.dashboard')
+@extends('patient.layout.dashboard')
 
 @section('title', 'Chat with ' . $doctor->name)
 
