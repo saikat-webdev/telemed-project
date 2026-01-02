@@ -3,6 +3,11 @@
 @section('title', 'Doctors | TeleHealth')
 
 @section('content')
+<div x-data="{ 
+    openModal: false, 
+    selectedDoctorName: '', 
+    selectedDoctorId: '' 
+}">
 <div class="max-w-7xl mx-auto">
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
@@ -62,6 +67,34 @@
         </form>
     </div>
 
+    @if ($errors->any())
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            <ul class="list-disc list-inside text-sm font-medium">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if(session('success'))
+        <div x-data="{ show: true }" 
+            x-show="show" 
+            x-init="setTimeout(() => show = false, 5000)"
+            class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex justify-between items-center shadow-sm"
+            x-transition:leave="transition ease-in duration-300">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="font-medium">{{ session('success') }}</span>
+            </div>
+            <button @click="show = false" class="text-green-700 hover:text-green-900">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         @forelse($doctors as $doctor)
             <div class="bg-white rounded-2xl border border-gray-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 group p-6 text-center relative overflow-hidden">
@@ -85,10 +118,12 @@
                 </p> -->
                 
                 <div class="pt-4 border-t border-gray-50 flex items-center justify-between">
-                    <span class="text-xs font-bold text-gray-700">₹ 1000 <span class="text-gray-400 font-normal">/ session</span></span>
-                    <a href="#" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-blue-600 transition-colors shadow-md">
+                    <span class="text-xs font-bold text-gray-700">₹ {{ $doctor->fees }} <span class="text-gray-400 font-normal">/ session</span></span>
+                    <button 
+                        @click="openModal = true; selectedDoctorName = '{{ $doctor->name }}'; selectedDoctorId = '{{ $doctor->id }}'"
+                        class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-blue-600 transition-colors shadow-md">
                         Book Now
-                    </a>
+                    </button>
                 </div>
             </div>
         @empty
@@ -101,6 +136,69 @@
                 <a href="{{ route('patient.doctors.index') }}" class="mt-6 text-blue-600 font-bold hover:underline">Clear all filters</a>
             </div>
         @endforelse
+
+
+        <div 
+                x-show="openModal" 
+                class="fixed inset-0 z-50 overflow-y-auto" 
+                x-cloak>
+                
+                <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" @click="openModal = false"></div>
+
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div 
+                        class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative transform transition-all"
+                        @click.away="openModal = false"
+                        x-show="openModal"
+                        x-transition:enter="ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-y-4"
+                        x-transition:enter-end="opacity-100 translate-y-0">
+                        
+                        <button @click="openModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-bold text-gray-800">Book Appointment</h3>
+                            <p class="text-gray-500 text-sm">Booking for <span class="text-blue-600 font-semibold" x-text="selectedDoctorName"></span></p>
+                        </div>
+
+                        <form action="{{ route('patient.appointments.store') }}" method="POST" class="space-y-5">
+                            @csrf
+                            {{-- This hidden input now gets the correct ID via Alpine --}}
+                            <input type="hidden" name="doctor_id" :value="selectedDoctorId">
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Select Date</label>
+                                <input type="date" name="appointment_date" min="{{ date('Y-m-d') }}" class="w-full border-gray-200 rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 bg-gray-50 border" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Available Slots</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    @foreach(['09:00', '10:30', '01:00', '02:30', '04:00', '05:30'] as $time)
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="appointment_time" value="{{ $time }}" class="peer hidden" required>
+                                            <div class="text-center py-2 px-1 border border-gray-200 rounded-lg text-sm peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 hover:bg-blue-50 transition-all">
+                                                {{ $time }}
+                                            </div>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Reason for Visit</label>
+                                <textarea rows="3" name="comment" class="w-full border-gray-200 rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 bg-gray-50 border" placeholder="Briefly describe your concern..."></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95">
+                                Confirm Appointment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
     </div>
 </div>
 @endsection

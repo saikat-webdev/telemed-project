@@ -57,7 +57,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div class="p-6 border-b border-gray-100 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-gray-800">Available Doctors</h3>
-                    <button class="px-4 py-1 text-sm border border-blue-600 text-blue-600 rounded hover:bg-blue-50">View All</button>
+                    <a href="{{ route('patient.doctors.index') }}" class="px-4 py-1 text-sm border border-blue-600 text-blue-600 rounded hover:bg-blue-50">View All</a>
                 </div>
                 
                 <div class="p-6 space-y-4">

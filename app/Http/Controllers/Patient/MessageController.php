@@ -16,7 +16,7 @@ class MessageController extends \App\Http\Controllers\Controller
         // }
         $patientId = auth()->id();
         $messages = Message::where(function($q) use ($patientId, $doctor) {
-            $q->where('sender_id', $patientId)->where('receiver_id', $doctor->id);
+            $q->where('sender_id', $patientId)->where('receiver_id', $doctor->user_id);
         })->orWhere(function($q) use ($patientId, $doctor) {
             $q->where('sender_id', $doctor->id)->where('receiver_id', $patientId);
         })
@@ -26,15 +26,16 @@ class MessageController extends \App\Http\Controllers\Controller
         return view('patient.messages.chat', compact('doctor', 'messages'));
     }
 
-    public function storeDoctorMsg(Request $request, User $doctor)
-    {
+    public function storeDoctorMsg(Request $request, Doctor $doctor)
+    {   
+        // dd($doctor->toArray());
         $request->validate([
             'message' => 'required|string|max:1000',
         ]);
 
         $message = new Message();
         $message->sender_id = auth()->id();
-        $message->receiver_id = $doctor->id;
+        $message->receiver_id = $doctor->user_id;
         $message->message = $request->input('message');
         $message->save();
 

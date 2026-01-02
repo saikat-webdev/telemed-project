@@ -12,6 +12,7 @@ class Doctor extends Model
         'specialization',
         'email',
         'phone',
+        'fees',
     ];
 
     public function appointments()

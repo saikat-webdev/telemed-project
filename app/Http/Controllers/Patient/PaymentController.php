@@ -17,6 +17,8 @@ class PaymentController extends \App\Http\Controllers\Controller
         $appointment = Appointment::with('doctor')->findOrFail($id);
 
         // Amount: 500 INR = 50000 Paise
+        //test amt
+        // $amountInPaise = 1000 * 100;
         $amountInPaise = $amount * 100;
         return $request->user()->checkoutCharge($amountInPaise, "Consultation with Dr. {$appointment->doctor->name}", 1, [
             'success_url' => route('patient.appointments.success', $appointment->id) . '?session_id={CHECKOUT_SESSION_ID}',

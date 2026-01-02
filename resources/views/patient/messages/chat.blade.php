@@ -29,7 +29,7 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-gray-800">{{ $doctor->name }}</h4>
-                    <p class="text-xs text-gray-500">{{ $doctor->specialization }}</p>
+                    <p class="text-xs text-gray-500">{{ $doctor->category->name }}</p>
                 </div>
             </div>
             <button class="text-gray-400 hover:text-gray-600">
