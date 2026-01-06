@@ -8,6 +8,8 @@ use App\Http\Controllers\Patient\MessageController;
 use App\Http\Controllers\Patient\PaymentController;
 use Faker\Provider\Payment;
 use App\Http\Controllers\Patient\AppointmentreviewController;
+use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
+use App\Http\Controllers\ConsultationController;
 
 //Login & Signup Routes
 Route::get('/register', [App\Http\Controllers\LoginController::class, 'register'])->name('register');
@@ -29,6 +31,8 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
+
+    //patient routes
     Route::get('/patient/dashboard', [DashboardController::class, 'index'])->name('patient.dashboard.index');
     Route::get('/patient/appointments', [AppointmentController::class, 'index'])->name('patient.appointments.index');
     Route::post('/patient/appointments', [AppointmentController::class, 'store'])->name('patient.appointments.store');
@@ -42,4 +46,13 @@ Route::group(['middleware' => ['auth']], function () {
     //stripe routes end
 
     Route::post('/appointments/review', [AppointmentreviewController::class, 'store'])->name('patient.appointments.review.store');
+
+
+    //doctor routes
+    Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])->name('doctor.dashboard');
+
+
+    //common routes
+    Route::get('/consultation/{appointment}/doctor', [ConsultationController::class, 'index'])->name('doctor.consultation');
+    Route::get('/consultation/{appointment}/patient', [ConsultationController::class, 'index'])->name('patient.consultation');
 });

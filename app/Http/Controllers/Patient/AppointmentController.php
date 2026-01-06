@@ -25,7 +25,7 @@ class AppointmentController extends \App\Http\Controllers\Controller
             'appointment_date' => 'required|date|after:now',
             'appointment_time' => 'required',
         ]);
-
+        
         //check if the doctor is available at the given date and time
         $existingAppointment = Appointment::where('doctor_id', $request->input('doctor_id'))
             ->where('appointment_date', $request->input('appointment_date'))

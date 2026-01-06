@@ -139,7 +139,12 @@
                                     </button>
                                 @endif
                             @endif
-                            
+                            @if($appointment->status == 2)
+                                <a href="{{ route(auth()->user()->hasRole('doctor') ? 'doctor.consultation' : 'patient.consultation', $appointment->id) }}" 
+                                class="bg-[#1e293b] hover:bg-black text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-gray-200 inline-block text-center">
+                                    Join Call
+                                </a>
+                            @endif
                             
                         </div>
                     </td>
