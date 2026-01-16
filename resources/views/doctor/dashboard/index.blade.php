@@ -152,10 +152,12 @@
                                     class="bg-[#1e293b] hover:bg-black text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-gray-200 inline-block text-center">
                                         Join Call
                                     </a>
-                                @else
-                                    <button class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
-                                        Details
-                                    </button>
+                                    @if(auth()->user()->hasRole('doctor'))
+                                        <a href="{{ route('doctor.prescription.create', $appointment->id) }}" 
+                                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                                            <i class="fas fa-prescription-bottle-alt"></i> Create Prescription
+                                        </a>
+                                    @endif
                                 @endif
                             </div>
                         </td>

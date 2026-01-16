@@ -10,6 +10,7 @@ use Faker\Provider\Payment;
 use App\Http\Controllers\Patient\AppointmentreviewController;
 use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
 use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\PrescriptionController;
 
 //Login & Signup Routes
 Route::get('/register', [App\Http\Controllers\LoginController::class, 'register'])->name('register');
@@ -55,4 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
     //common routes
     Route::get('/consultation/{appointment}/doctor', [ConsultationController::class, 'index'])->name('doctor.consultation');
     Route::get('/consultation/{appointment}/patient', [ConsultationController::class, 'index'])->name('patient.consultation');
+
+    Route::get('/appointments/{appointment}/prescription/create', [PrescriptionController::class, 'create'])
+    ->name('doctor.prescription.create');
 });

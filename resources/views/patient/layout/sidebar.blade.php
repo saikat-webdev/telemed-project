@@ -1,8 +1,13 @@
 <aside class="w-64 bg-[#1e293b] text-white flex flex-col fixed h-full">
-            <div class="p-6 flex items-center gap-2 border-b border-gray-700">
-                <div class="w-8 h-8 bg-white text-[#1e293b] rounded flex items-center justify-center font-bold">T</div>
-                <h1 class="text-xl font-bold">TeleHealth<span class="text-orange-500">)</span></h1>
-            </div>
+            <div class="flex items-center group">
+    <h1 class="text-2xl tracking-tight leading-none flex items-center">
+        <span class="font-light text-white opacity-90">MyHealth</span>
+        
+        <span class="font-bold text-orange-500 ml-0.5">Matters</span>
+        
+        <span class="ml-2 h-5 w-1 bg-orange-500/50 rounded-full hidden lg:block"></span>
+    </h1>
+</div>
 
             <nav class="flex-1 p-4">
                 <ul class="space-y-2">
