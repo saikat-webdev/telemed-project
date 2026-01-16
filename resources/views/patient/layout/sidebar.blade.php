@@ -1,7 +1,11 @@
 <aside class="w-64 bg-[#1e293b] text-white flex flex-col fixed h-full">
-            <div class="p-6 flex items-center gap-2 border-b border-gray-700">
-                <div class="w-8 h-8 bg-white text-[#1e293b] rounded flex items-center justify-center font-bold">T</div>
-                <h1 class="text-xl font-bold">TeleHealth<span class="text-orange-500">)</span></h1>
+            <div class="p-6 flex items-center justify-center border-b border-gray-700">
+                <a href="{{ route('patient.dashboard.index') }}" class="hover:opacity-80 transition-opacity">
+                    <h1 class="text-2xl font-black tracking-tighter uppercase">
+                        <span class="text-white">MyHealth</span><span class="text-orange-500">Matters</span>
+                    </h1>
+                    <p class="text-[10px] text-gray-400 text-center tracking-[0.2em] -mt-1 font-bold">.FIT</p>
+                </a>
             </div>
 
             <nav class="flex-1 p-4">
