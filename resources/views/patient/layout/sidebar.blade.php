@@ -44,6 +44,14 @@
             </li>
 
             <li>
+                <a href="{{ route('patient.symptom-checker.index') }}"
+                   class="flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group {{ request()->is('patient/symptom-checker*') ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/25' : 'hover:bg-indigo-800/50 text-indigo-200 hover:text-white hover:translate-x-1' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m8-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="font-medium">AI Symptom Checker</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ route('patient.messages.index') }}" 
                    class="flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group {{ request()->is('patient/messages*') || request()->is('patient/chat*') ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/25' : 'hover:bg-indigo-800/50 text-indigo-200 hover:text-white hover:translate-x-1' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8s-9-3.582-9-8 4.03-8 9-8 9 3.582 9 8z"/></svg>

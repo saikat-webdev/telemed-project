@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Patient\MessageController;
 use App\Http\Controllers\Patient\PaymentController;
+use App\Http\Controllers\Patient\SymptomCheckerController;
 use Faker\Provider\Payment;
 use App\Http\Controllers\Patient\AppointmentreviewController;
 use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
@@ -45,6 +46,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/patient/appointments', [AppointmentController::class, 'store'])->name('patient.appointments.store');
         Route::patch('/patient/appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('patient.appointments.cancel');
         Route::get('/patient/doctors', [App\Http\Controllers\Patient\DoctorController::class, 'index'])->name('patient.doctors.index');
+        Route::match(['get', 'post'], '/patient/symptom-checker', [SymptomCheckerController::class, 'index'])->name('patient.symptom-checker.index');
         Route::get('/patient/messages', [MessageController::class, 'index'])->name('patient.messages.index');
         Route::get('/patient/chat/{doctor}', [MessageController::class, 'showDoctorMsg'])->name('patient.messages.show');
         Route::post('/patient/chat/{doctor}', [MessageController::class, 'storeDoctorMsg'])->name('patient.messages.store');

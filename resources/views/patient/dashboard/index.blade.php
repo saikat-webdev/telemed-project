@@ -220,6 +220,27 @@
         </div>
     </div>
 
+    <div class="bg-gradient-to-r from-indigo-950 via-violet-900 to-fuchsia-800 rounded-3xl p-8 text-white shadow-xl">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div class="max-w-2xl">
+                <span class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-[0.25em]">New Module</span>
+                <h3 class="text-2xl md:text-3xl font-black mt-4">AI Symptom Checker</h3>
+                <p class="text-indigo-100 mt-3 text-sm md:text-base">
+                    Describe what you are feeling and get a quick AI-guided suggestion about possible health issues and which specialist may be most relevant.
+                </p>
+                <p class="text-indigo-200/90 mt-3 text-xs uppercase tracking-[0.2em]">
+                    Guidance only. Not a medical diagnosis.
+                </p>
+            </div>
+            <div class="shrink-0">
+                <a href="{{ route('patient.symptom-checker.index') }}" class="inline-flex items-center gap-2 bg-white text-indigo-900 px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-indigo-50 transition-all">
+                    Try Symptom Checker
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div x-show="openModal" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
         <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" @click="openModal = false"></div>
 
