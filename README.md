@@ -1,6 +1,6 @@
-# TeleMed Project
+# HealthHub
 
-TeleMed Project is a role-based telemedicine web application built with Laravel. It provides separate portals for patients, doctors, and administrators so online consultation workflows can be managed from booking to payment to post-visit review.
+HealthHub is a role-based telemedicine web application built with Laravel. It provides separate portals for patients, doctors, and administrators so online consultation workflows can be managed from booking to payment to post-visit review.
 
 ## Overview
 
@@ -199,7 +199,7 @@ Optional but useful in local Windows/XAMPP setup:
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/saikat-webdev/telemed-project
 cd telemed-project
 ```
 
@@ -238,7 +238,7 @@ php artisan key:generate
 Update the `.env` file with your database settings:
 
 ```env
-APP_NAME=TeleMed
+APP_NAME=HealthHub
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://127.0.0.1:8000
@@ -461,4 +461,4 @@ Good next steps for this project:
 
 ## License
 
-This project currently inherits Laravel’s default MIT-friendly project structure, but you should define your own project license before public distribution if needed.
+This project is proprietary software.

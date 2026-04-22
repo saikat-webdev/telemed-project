@@ -1,6 +1,6 @@
 @extends('patient.layout.dashboard')
 
-@section('title', 'Patient Dashboard | TeleHealth')
+@section('title', 'Patient Dashboard | HealthHub')
 
 @section('content')
 <div x-data="{ openModal: false, selectedDoctorName: '', selectedDoctorId: '' }" class="space-y-6">

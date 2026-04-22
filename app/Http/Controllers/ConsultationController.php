@@ -16,7 +16,7 @@ class ConsultationController extends Controller
             abort(403, 'You are not authorized to enter this room.');
         }
 
-        $roomName = "TeleHealth_Live_" . md5($appointment->id . config('app.key'));
+        $roomName = "HealthHub_Live_" . md5($appointment->id . config('app.key'));
 
         return view('common.consultation.room', compact('appointment', 'roomName'));
     }

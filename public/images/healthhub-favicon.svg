@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="HealthHub favicon">
+  <defs>
+    <linearGradient id="hhg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#hhg)"/>
+  <path d="M78 70h28v42h44V70h28v116h-28v-46h-44v46H78z" fill="#fff"/>
+</svg>

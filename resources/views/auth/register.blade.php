@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up | My App</title>
+    <title>Sign Up | HealthHub</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/healthhub-favicon.svg') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/auth.css'])
 </head>
 <body>
     <div class="signup-container">
         <div class="signup-card">
-            <h2>Create Account</h2>
-            <p>Join our community today</p>
+            <h2>Create Your HealthHub Account</h2>
+            <p>Join HealthHub and book care online</p>
 
             <form action="{{ route('register') }}" method="POST">
                 @csrf

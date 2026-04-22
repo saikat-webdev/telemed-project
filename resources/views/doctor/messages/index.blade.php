@@ -1,6 +1,6 @@
 @extends('doctor.layout.structure')
 
-@section('title', 'Messages | TeleHealth')
+@section('title', 'Messages | HealthHub')
 
 @section('content')
 <div class="space-y-6">

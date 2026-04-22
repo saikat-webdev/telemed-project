@@ -1,6 +1,6 @@
 @extends('patient.layout.dashboard')
 
-@section('title', 'My Appointments | TeleHealth')
+@section('title', 'My Appointments | HealthHub')
 
 @section('content')
 <div class="space-y-6">

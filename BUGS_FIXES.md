@@ -1,4 +1,4 @@
-# TeleMed Project - Bugs & Fixes Log
+# HealthHub - Bugs & Fixes Log
 
 ## Bugs Fixed (Current Session)
 

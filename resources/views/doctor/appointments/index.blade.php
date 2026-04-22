@@ -45,7 +45,7 @@
 </style>
 @endpush
 
-@section('title', 'Appointments | TeleHealth')
+@section('title', 'Appointments | HealthHub')
 
 @section('content')
 <div class="space-y-6">

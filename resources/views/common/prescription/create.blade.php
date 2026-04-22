@@ -7,8 +7,8 @@
         {{-- 1. Header: Logo & Doctor Info --}}
         <div class="flex justify-between items-start border-b-2 border-gray-100 pb-8">
             <div>
-                <h1 class="text-3xl font-black text-blue-600 tracking-tighter">TeleHealth</h1>
-                <p class="text-xs text-gray-400 uppercase tracking-widest">Digital Healthcare Portal</p>
+                <img src="{{ asset('images/healthhub-logo.svg') }}" alt="HealthHub" class="h-14 w-auto">
+                <p class="text-xs text-gray-400 uppercase tracking-widest mt-2">Digital Healthcare Portal</p>
             </div>
             <div class="text-right">
                 <h2 class="text-xl font-bold text-gray-800">Dr. {{ Auth::user()->name }}</h2>
@@ -87,7 +87,7 @@
         {{-- 5. Footer & Signature --}}
         <div class="mt-12 pt-8 border-t border-gray-100 flex justify-between items-end">
             <div class="text-[10px] text-gray-400 italic">
-                Generated via TeleHealth System on {{ now()->format('d M, Y h:i A') }}
+                Generated via HealthHub System on {{ now()->format('d M, Y h:i A') }}
             </div>
             <div class="text-center">
                 <div class="mb-2">
