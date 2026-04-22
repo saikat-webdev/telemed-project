@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Appointment;
 use App\Models\AppointmentReview;
+use Illuminate\Http\Request;
 
 class AppointmentreviewController extends Controller
 {
@@ -16,6 +17,21 @@ class AppointmentreviewController extends Controller
             'review' => 'required|string|max:1000',
             'rating' => 'required|integer|min:1|max:5',
         ]);
+
+        // Verify the appointment belongs to the logged-in patient
+        $appointment = Appointment::where('id', $request->appointment_id)
+            ->where('patient_id', auth()->id())
+            ->first();
+
+        if (!$appointment) {
+            return back()->withErrors(['appointment_id' => 'You can only review your own appointments.']);
+        }
+
+        // Check if a review already exists for this appointment
+        $existingReview = AppointmentReview::where('appointment_id', $request->appointment_id)->first();
+        if ($existingReview) {
+            return back()->withErrors(['review' => 'You have already reviewed this appointment.']);
+        }
 
         $appointmentReview = new AppointmentReview();
         $appointmentReview->appointment_id = $request->appointment_id;

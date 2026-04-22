@@ -11,14 +11,29 @@ class PaymentController extends \App\Http\Controllers\Controller
 {
     public function pay(Request $request)
     {
-        // dd($request->all());
-        $id = $request->input('appointment_id');
-        $amount = $request->input('amount');
-        $appointment = Appointment::with('doctor')->findOrFail($id);
+        $request->validate([
+            'appointment_id' => 'required|exists:appointments,id',
+        ]);
 
-        // Amount: 500 INR = 50000 Paise
-        //test amt
-        // $amountInPaise = 1000 * 100;
+        $id = $request->input('appointment_id');
+        $appointment = Appointment::with('doctor')
+            ->where('patient_id', auth()->id())
+            ->findOrFail($id);
+
+        if ((int) $appointment->status !== 1) {
+            return redirect()
+                ->route('patient.appointments.index')
+                ->withErrors(['payment' => 'Only confirmed appointments can be paid.']);
+        }
+
+        $amount = (float) ($appointment->doctor->fees ?? 0);
+
+        if ($amount <= 0) {
+            return redirect()
+                ->route('patient.appointments.index')
+                ->withErrors(['payment' => 'This doctor does not have a valid consultation fee configured.']);
+        }
+
         $amountInPaise = $amount * 100;
         return $request->user()->checkoutCharge($amountInPaise, "Consultation with Dr. {$appointment->doctor->name}", 1, [
             'success_url' => route('patient.appointments.success', $appointment->id) . '?session_id={CHECKOUT_SESSION_ID}',
@@ -39,14 +54,16 @@ class PaymentController extends \App\Http\Controllers\Controller
 
     public function success(Request $request, $id)
     {
-        // 1. Get the appointment
-        $appointment = Appointment::findOrFail($id);
+        $appointment = Appointment::where('patient_id', auth()->id())->findOrFail($id);
 
-        // 2. Use the Stripe SDK to retrieve the session details
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-        
-        // The {CHECKOUT_SESSION_ID} is a placeholder Stripe fills in the URL
+        $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
         $session = $stripe->checkout->sessions->retrieve($request->get('session_id'));
+
+        // Verify payment was successful
+        if ($session->payment_status !== 'paid') {
+            return redirect()->route('patient.appointments.index')
+                            ->with('error', 'Payment was not successful. Please try again.');
+        }
 
         $newTransaction = Transaction::create([
             'appointment_id' => $appointment->id,
@@ -58,7 +75,7 @@ class PaymentController extends \App\Http\Controllers\Controller
         $transactionID = $newTransaction->id;
         
         $appointment->update([
-            'status' => 2, // Fees Paid
+            'status' => 2,
             'transaction_id' => $transactionID,
         ]);
 

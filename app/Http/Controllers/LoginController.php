@@ -41,17 +41,13 @@ class LoginController extends Controller
                 // dd("User found");
                 // dd(auth()->user()->roles);
                 if(auth()->user()->hasRole('admin')){
-                    dd('Admin dashboard');
-                    // return redirect()->route('admin.dashboard');
+                    return redirect()->route('admin.dashboard');
                 }elseif(auth()->user()->hasRole('patient')){
-                    // dd('Patient dashboard');
                     return redirect()->route('patient.dashboard.index');
                 }elseif(auth()->user()->hasRole('doctor')){
-                    // dd('Doctor dashboard');
                     return redirect()->route('doctor.dashboard');
                 } else {
-                    dd('Role not defined');    
-                    // return redirect()->route('user.index');
+                    return redirect()->route('user.index');
                 }
             }
 

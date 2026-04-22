@@ -13,6 +13,7 @@ class Doctor extends Model
         'email',
         'phone',
         'fees',
+        'user_id',
     ];
 
     public function appointments()
@@ -23,5 +24,10 @@ class Doctor extends Model
     public function category()
     {
         return $this->belongsTo(DoctorCategory::class, 'specialization', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

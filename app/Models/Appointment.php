@@ -30,36 +30,38 @@ class Appointment extends Model
 
     public function review()
     {
-        return $this->hasOne(AppointmentReview::class);
+        return $this->hasOne(AppointmentReview::class, 'appointment_id', 'id');
     }
     
-    //accessors
-    protected function statusLabel(): Attribute
+    public function transaction()
     {
-        return Attribute::make(
-            get: function () {
-                return match($this->status) {
-                    0 => 'Pending',
-                    1 => 'Confirmed',
-                    2 => 'Fees Paid',
-                    3 => 'Completed',
-                    4 => 'Cancelled',
-                    default => 'Unknown',
-                };
-            }
-        );
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
+    
+    // Helper method for status label
+    public function getStatusLabelAttribute()
+    {
+        return match((int)$this->status) {
+            0 => 'Pending',
+            1 => 'Confirmed',
+            2 => 'Fees Paid',
+            3 => 'Completed',
+            4 => 'Cancelled',
+            default => 'Unknown',
+        };
     }
 
-    protected function statusColor(): Attribute
+    // Helper method for status color
+    public function getStatusColorAttribute()
     {
-        return Attribute::make(
-            get: fn () => match($this->status) {
-                0 => 'bg-yellow-100 text-yellow-700',
-                1 => 'bg-green-100 text-green-700',
-                4 => 'bg-red-100 text-red-700',
-                default => 'bg-gray-100 text-gray-700',
-            }
-        );
+        return match((int)$this->status) {
+            0 => 'bg-yellow-100 text-yellow-700',
+            1 => 'bg-blue-100 text-blue-700',
+            2 => 'bg-purple-100 text-purple-700',
+            3 => 'bg-green-100 text-green-700',
+            4 => 'bg-red-100 text-red-700',
+            default => 'bg-gray-100 text-gray-700',
+        };
     }
 
     

@@ -8,7 +8,7 @@
     <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
             <div class="flex items-center gap-3">
-                <h2 class="text-2xl font-extrabold text-gray-800">Welcome back, Dr. {{ Auth::user()->name }}</h2>
+                <h2 class="text-2xl font-extrabold text-gray-800">Welcome back, {{ Auth::user()->name }}</h2>
                 {{-- Status Indicator Dot --}}
                 <span class="relative flex h-3 w-3">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -45,7 +45,7 @@
     </div>
 
     {{-- Stats Cards (Quick Glance) --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex justify-between items-start">
                 <div>
@@ -91,6 +91,21 @@
                 <span class="flex h-1.5 w-1.5 rounded-full bg-orange-500"></span>
                 Action Required
             </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Unread Messages</p>
+                    <h3 class="text-3xl font-black text-gray-800 mt-1">{{ $stats['unreadMessages'] ?? 0 }}</h3>
+                </div>
+                <div class="p-2 bg-violet-50 rounded-lg text-violet-600">
+                    <i class="fas fa-comments"></i>
+                </div>
+            </div>
+            <a href="{{ route('doctor.messages.index') }}" class="text-[10px] text-violet-600 mt-4 font-bold uppercase tracking-widest inline-block">
+                Open Inbox
+            </a>
         </div>
     </div>
 

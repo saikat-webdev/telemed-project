@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -12,29 +12,37 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //  Create an admin user
-        $admin = \App\Models\User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@admin.com',
-            'username' => 'admin',
-            'password' => bcrypt('12345678'),                                                   
-        ]);
-        $admin->assignRole('admin');        
-        // Create a patient user
-        $patient = \App\Models\User::create([
-            'name' => 'Patient User',
-            'username' => 'patient',
-            'email' => 'patient@patient.com',
-            'password' => bcrypt('12345678'),
-        ]);
-        $patient->assignRole('patient');            
-        //create a doctor user
-        $doctorUser = \App\Models\User::create([
-            'name' => 'Doctor User',
-            'username' => 'doctor',
-            'email' => 'doctor@doctor.com',
-            'password' => bcrypt('12345678'),
-        ]);
+        //  Create an admin user (only if not exists)
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Admin User',
+                'username' => 'admin',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+        $admin->assignRole('admin');
+        
+        // Create a patient user (only if not exists)
+        $patient = User::firstOrCreate(
+            ['email' => 'patient@patient.com'],
+            [
+                'name' => 'Patient User',
+                'username' => 'patient',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+        $patient->assignRole('patient');
+        
+        // Create a doctor user (only if not exists)
+        $doctorUser = User::firstOrCreate(
+            ['email' => 'doctor@doctor.com'],
+            [
+                'name' => 'Dr. Sarah Johnson',
+                'username' => 'doctor',
+                'password' => bcrypt('12345678'),
+            ]
+        );
         $doctorUser->assignRole('doctor');
     }
 }

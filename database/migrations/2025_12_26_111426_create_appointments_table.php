@@ -19,6 +19,11 @@ return new class extends Migration
             $table->time('appointment_time');
             $table->string('status')->default('scheduled');
             $table->timestamps();
+
+            $table->index('doctor_id');
+            $table->index('patient_id');
+            $table->index('status');
+            $table->index(['doctor_id', 'appointment_date']);
         });
     }
 

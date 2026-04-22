@@ -30,8 +30,8 @@ class DoctorscategorySeeder extends Seeder
         foreach ($categories as $category) {
             DB::table('doctor_categories')->insert([
                 'name' => $category['name'],
-                'slug' => Str::slug($category['name']),
-                'icon' => $category['icon'],
+                'description' => $category['name'] . ' specialists',
+                'status' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
