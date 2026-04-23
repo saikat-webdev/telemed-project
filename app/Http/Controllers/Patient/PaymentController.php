@@ -1,11 +1,10 @@
 <?php
+
 namespace App\Http\Controllers\Patient;
 
-use App\Http\Controllers\Controller;
 use App\Models\Appointment;
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
 
 class PaymentController extends \App\Http\Controllers\Controller
 {
@@ -35,8 +34,9 @@ class PaymentController extends \App\Http\Controllers\Controller
         }
 
         $amountInPaise = $amount * 100;
+
         return $request->user()->checkoutCharge($amountInPaise, "Consultation with Dr. {$appointment->doctor->name}", 1, [
-            'success_url' => route('patient.appointments.success', $appointment->id) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('patient.appointments.success', $appointment->id).'?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('patient.appointments.index'),
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -45,7 +45,7 @@ class PaymentController extends \App\Http\Controllers\Controller
                     'product_data' => [
                         'name' => "Consultation with Dr. {$appointment->doctor->name}",
                     ],
-                    'unit_amount' => $amountInPaise, 
+                    'unit_amount' => $amountInPaise,
                 ],
                 'quantity' => 1,
             ]],
@@ -62,7 +62,7 @@ class PaymentController extends \App\Http\Controllers\Controller
         // Verify payment was successful
         if ($session->payment_status !== 'paid') {
             return redirect()->route('patient.appointments.index')
-                            ->with('error', 'Payment was not successful. Please try again.');
+                ->with('error', 'Payment was not successful. Please try again.');
         }
 
         $newTransaction = Transaction::create([
@@ -73,13 +73,13 @@ class PaymentController extends \App\Http\Controllers\Controller
             'status' => 'completed',
         ]);
         $transactionID = $newTransaction->id;
-        
+
         $appointment->update([
             'status' => 2,
             'transaction_id' => $transactionID,
         ]);
 
         return redirect()->route('patient.appointments.index')
-                        ->with('success', 'Payment Successful! Ref ID: ' . $session->payment_intent);
+            ->with('success', 'Payment Successful! Ref ID: '.$session->payment_intent);
     }
 }

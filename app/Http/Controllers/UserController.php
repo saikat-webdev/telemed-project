@@ -13,12 +13,12 @@ class UserController extends Controller
     {
         // dd('User index page');
         // return view('user.index');
-        if(auth()->check()){
-            if(auth()->user()->hasRole('admin')){
+        if (auth()->check()) {
+            if (auth()->user()->hasRole('admin')) {
                 return redirect()->route('admin.dashboard');
-            }elseif(auth()->user()->hasRole('patient')){
+            } elseif (auth()->user()->hasRole('patient')) {
                 return redirect()->route('patient.dashboard.index');
-            }elseif(auth()->user()->hasRole('doctor')){
+            } elseif (auth()->user()->hasRole('doctor')) {
                 return redirect()->route('doctor.dashboard');
             } else {
                 return redirect()->route('user.index');
@@ -33,7 +33,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        // 
+        //
     }
 
     /**

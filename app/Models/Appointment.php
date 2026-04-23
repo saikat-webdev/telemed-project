@@ -21,11 +21,27 @@ class Appointment extends Model
         'doctor_id',
         'patient_id',
         'appointment_date',
+        'original_appointment_date',
         'appointment_time',
+        'original_appointment_time',
         'comment',
         'status',
         'transaction_id',
+        'rescheduled_at',
+        'reminder_sent_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'appointment_date' => 'date',
+            'original_appointment_date' => 'date',
+            'appointment_time' => 'datetime:H:i:s',
+            'original_appointment_time' => 'datetime:H:i:s',
+            'rescheduled_at' => 'datetime',
+            'reminder_sent_at' => 'datetime',
+        ];
+    }
 
     protected function status(): Attribute
     {
@@ -71,6 +87,11 @@ class Appointment extends Model
     public function review()
     {
         return $this->hasOne(AppointmentReview::class, 'appointment_id', 'id');
+    }
+
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class);
     }
 
     public function transaction()

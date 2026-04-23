@@ -58,6 +58,14 @@
                     <span class="font-medium">Messages</span>
                 </a>
             </li>
+
+            <li>
+                <a href="{{ route('patient.medical-history.index') }}"
+                   class="flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group {{ request()->is('patient/medical-history*') ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/25' : 'hover:bg-indigo-800/50 text-indigo-200 hover:text-white hover:translate-x-1' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6a2 2 0 012-2h6m-6 8h6m2 4H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586A1 1 0 0113.293 5.293l5.414 5.414A1 1 0 0119 11.414V19a2 2 0 01-2 2z"/></svg>
+                    <span class="font-medium">Medical History</span>
+                </a>
+            </li>
         </ul>
     </nav>
 

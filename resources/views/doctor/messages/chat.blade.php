@@ -33,6 +33,10 @@
                     <p class="text-xs text-gray-500">{{ $patient->email }}</p>
                 </div>
             </div>
+            <form method="GET" class="flex gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search messages" class="rounded-xl border-gray-200 text-sm focus:border-violet-500 focus:ring-violet-500">
+                <button type="submit" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl text-sm font-semibold">Search</button>
+            </form>
         </div>
 
         <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/30" id="message-container">
@@ -54,6 +58,11 @@
         </div>
 
         <div class="p-4 border-t border-gray-100">
+            @if($messages->hasPages())
+                <div class="mb-4">
+                    {{ $messages->links() }}
+                </div>
+            @endif
             <form action="{{ route('doctor.messages.store', $patient) }}" method="POST" class="flex gap-3">
                 @csrf
                 <input type="text" name="message" placeholder="Type your message here..." required

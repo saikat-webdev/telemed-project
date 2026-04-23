@@ -23,7 +23,7 @@ class AppointmentreviewController extends Controller
             ->where('patient_id', auth()->id())
             ->first();
 
-        if (!$appointment) {
+        if (! $appointment) {
             return back()->withErrors(['appointment_id' => 'You can only review your own appointments.']);
         }
 
@@ -33,7 +33,7 @@ class AppointmentreviewController extends Controller
             return back()->withErrors(['review' => 'You have already reviewed this appointment.']);
         }
 
-        $appointmentReview = new AppointmentReview();
+        $appointmentReview = new AppointmentReview;
         $appointmentReview->appointment_id = $request->appointment_id;
         $appointmentReview->patient_id = auth()->id();
         $appointmentReview->doctor_id = $request->doctor_id;

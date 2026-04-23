@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MessageController extends Controller
 {
@@ -15,9 +16,25 @@ class MessageController extends Controller
         return Doctor::where('user_id', auth()->id())->firstOrFail();
     }
 
-    public function index()
+    protected function paginateCollection($items, int $perPage = 10): LengthAwarePaginator
+    {
+        $page = LengthAwarePaginator::resolveCurrentPage();
+        $collection = collect($items)->values();
+        $results = $collection->forPage($page, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $results,
+            $collection->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+    }
+
+    public function index(Request $request)
     {
         $doctor = $this->currentDoctor();
+        $search = trim((string) $request->string('search'));
 
         $patients = User::whereHas('appointments', function ($query) use ($doctor) {
             $query->where('doctor_id', $doctor->id);
@@ -42,15 +59,27 @@ class MessageController extends Controller
 
                 return $patient;
             })
+            ->filter(function (User $patient) use ($search) {
+                if ($search === '') {
+                    return true;
+                }
+
+                return str_contains(strtolower($patient->name), strtolower($search))
+                    || str_contains(strtolower($patient->email), strtolower($search))
+                    || str_contains(strtolower(optional($patient->last_message)->message ?? ''), strtolower($search));
+            })
             ->sortByDesc(fn (User $patient) => optional($patient->last_message)->created_at)
             ->values();
+
+        $patients = $this->paginateCollection($patients, 10);
 
         return view('doctor.messages.index', compact('patients'));
     }
 
-    public function showPatientMsg(User $patient)
+    public function showPatientMsg(Request $request, User $patient)
     {
         $doctor = $this->currentDoctor();
+        $search = trim((string) $request->string('search'));
 
         abort_unless(
             $patient->appointments()->where('doctor_id', $doctor->id)->exists(),
@@ -63,9 +92,16 @@ class MessageController extends Controller
         })->orWhere(function ($query) use ($doctor, $patient) {
             $query->where('sender_id', $patient->id)
                 ->where('receiver_id', $doctor->user_id);
-        })
+        });
+
+        if ($search !== '') {
+            $messages->where('message', 'like', '%'.$search.'%');
+        }
+
+        $messages = $messages
             ->orderBy('created_at', 'asc')
-            ->get();
+            ->paginate(25)
+            ->withQueryString();
 
         Message::where('sender_id', $patient->id)
             ->where('receiver_id', $doctor->user_id)

@@ -11,6 +11,6 @@ class Transaction extends Model
         'stripe_transaction_id',
         'amount',
         'currency',
-        'status'
+        'status',
     ];
 }

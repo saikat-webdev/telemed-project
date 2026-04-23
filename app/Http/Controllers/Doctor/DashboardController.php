@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
-use App\Models\Message;
-use Illuminate\Http\Request;
 use App\Models\Doctor;
+use App\Models\Message;
 
 class DashboardController extends Controller
 {
@@ -14,11 +13,11 @@ class DashboardController extends Controller
     {
         $userId = auth()->user()->id;
         $doctor = Doctor::where('user_id', $userId)->first();
-        
-        if (!$doctor) {
+
+        if (! $doctor) {
             abort(403, 'You are not authorized to view doctor dashboard.');
         }
-        
+
         $todaysAppointments = Appointment::where('doctor_id', $doctor->id)
             ->whereDate('appointment_date', now()->toDateString())
             ->with('patient')

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Doctor;
 use App\Models\Appointment;
+use App\Models\Doctor;
 use App\Models\DoctorCategory;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class TestDataSeeder extends Seeder
 {
@@ -58,10 +58,10 @@ class TestDataSeeder extends Seeder
                 ['name' => $doc['name'], 'username' => strtok($doc['email'], '@'), 'password' => bcrypt('12345678')]
             );
             $user->assignRole('doctor');
-            
+
             // Get category
             $category = DoctorCategory::where('name', $doc['category'])->first();
-            
+
             // Create doctor profile linked to user
             $doctor = Doctor::firstOrCreate(
                 ['user_id' => $user->id],
@@ -69,11 +69,11 @@ class TestDataSeeder extends Seeder
                     'name' => $doc['name'],
                     'specialization' => $category->id,
                     'email' => $doc['email'],
-                    'phone' => '555-' . rand(1000, 9999),
+                    'phone' => '555-'.rand(1000, 9999),
                     'fees' => $doc['fees'],
                 ]
             );
-            
+
             $doctors[] = $doctor;
         }
 
@@ -102,11 +102,11 @@ class TestDataSeeder extends Seeder
         // CREATE APPOINTMENTS
         // ============================================
         $comments = ['Regular checkup', 'Follow-up visit', 'New symptoms', 'Prescription renewal', 'Lab results', 'Consultation'];
-        
+
         // Appointments for today
         foreach ($doctors as $index => $doctor) {
             $patient = $patients[array_rand($patients)];
-            
+
             Appointment::create([
                 'doctor_id' => $doctor->id,
                 'patient_id' => $patient->id,
@@ -121,7 +121,7 @@ class TestDataSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             $doctor = $doctors[array_rand($doctors)];
             $patient = $patients[array_rand($patients)];
-            
+
             Appointment::create([
                 'doctor_id' => $doctor->id,
                 'patient_id' => $patient->id,
@@ -136,7 +136,7 @@ class TestDataSeeder extends Seeder
         for ($i = 0; $i < 3; $i++) {
             $doctor = $doctors[array_rand($doctors)];
             $patient = $patients[array_rand($patients)];
-            
+
             Appointment::create([
                 'doctor_id' => $doctor->id,
                 'patient_id' => $patient->id,
@@ -148,8 +148,8 @@ class TestDataSeeder extends Seeder
         }
 
         $this->command->info('Test data seeded successfully!');
-        $this->command->info('Users: ' . User::count());
-        $this->command->info('Doctors: ' . Doctor::count());
-        $this->command->info('Appointments: ' . Appointment::count());
+        $this->command->info('Users: '.User::count());
+        $this->command->info('Doctors: '.Doctor::count());
+        $this->command->info('Appointments: '.Appointment::count());
     }
 }

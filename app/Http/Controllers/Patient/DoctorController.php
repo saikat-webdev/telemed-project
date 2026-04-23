@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Doctor;
 use App\Models\DoctorCategory;
+use Illuminate\Http\Request;
 
 class DoctorController extends Controller
 {
@@ -16,7 +16,7 @@ class DoctorController extends Controller
                 return $query->where('specialization', $categoryId);
             })
             ->when($request->search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%');
+                return $query->where('name', 'like', '%'.$search.'%');
             })
             ->orderBy('name')
             ->get();
@@ -24,5 +24,5 @@ class DoctorController extends Controller
         $categories = DoctorCategory::where('status', 1)->orderBy('name')->get();
 
         return view('patient.doctors.index', compact('doctors', 'categories'));
-    }    
+    }
 }

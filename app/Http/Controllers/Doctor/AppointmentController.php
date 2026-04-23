@@ -17,33 +17,33 @@ class AppointmentController extends Controller
     public function index(Request $request)
     {
         $doctor = $this->currentDoctor();
-        
+
         $query = Appointment::where('doctor_id', $doctor->id)
             ->with(['patient', 'transaction'])
             ->orderBy('appointment_date', 'asc')
             ->orderBy('appointment_time', 'asc');
-        
+
         // Filter by status if provided
         if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
         }
-        
+
         $appointments = $query->get();
-        
+
         return view('doctor.appointments.index', compact('appointments'));
     }
-    
+
     /**
      * Show appointment details for doctor
      */
     public function show($id)
     {
         $doctor = $this->currentDoctor();
-        
+
         $appointment = Appointment::with(['patient', 'review', 'transaction', 'doctor'])
             ->where('doctor_id', $doctor->id)
             ->findOrFail($id);
-        
+
         return view('doctor.appointments.show', compact('appointment'));
     }
 

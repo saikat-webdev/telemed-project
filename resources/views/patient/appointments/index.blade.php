@@ -90,6 +90,11 @@
                             <td class="p-4">
                                 <p class="text-sm font-medium text-gray-800">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('M j, Y') }}</p>
                                 <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</p>
+                                @if($appointment->rescheduled_at)
+                                    <p class="text-[11px] text-violet-600 mt-1 font-semibold">
+                                        Rescheduled {{ $appointment->rescheduled_at->diffForHumans() }}
+                                    </p>
+                                @endif
                             </td>
                             <td class="p-4">
                                 <p class="text-sm text-gray-700 max-w-xs">{{ $appointment->comment ?: 'General consultation' }}</p>
@@ -115,6 +120,9 @@
                                         <a href="{{ route('patient.messages.show', $appointment->doctor) }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold py-2 px-4 rounded-xl transition">
                                             Message
                                         </a>
+                                        <button type="button" onclick="openRescheduleModal({{ $appointment->id }}, '{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('Y-m-d') }}', '{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i') }}')" class="bg-violet-50 hover:bg-violet-100 text-violet-700 text-xs font-semibold py-2 px-4 rounded-xl transition">
+                                            Reschedule
+                                        </button>
                                         <form action="{{ route('patient.appointments.cancel', $appointment) }}" method="POST" class="m-0">
                                             @csrf
                                             @method('PATCH')
@@ -130,6 +138,9 @@
                                             Message
                                         </a>
                                     @elseif((int) $appointment->status === 0)
+                                        <button type="button" onclick="openRescheduleModal({{ $appointment->id }}, '{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('Y-m-d') }}', '{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i') }}')" class="bg-violet-50 hover:bg-violet-100 text-violet-700 text-xs font-semibold py-2 px-4 rounded-xl transition">
+                                            Reschedule
+                                        </button>
                                         <form action="{{ route('patient.appointments.cancel', $appointment) }}" method="POST" class="m-0">
                                             @csrf
                                             @method('PATCH')
@@ -149,6 +160,11 @@
                                                 Leave Review
                                             </button>
                                         @endif
+                                        @if($appointment->prescription)
+                                            <a href="{{ route('prescription.download', $appointment) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                                                Download Prescription
+                                            </a>
+                                        @endif
                                     @else
                                         <span class="text-xs text-gray-400 font-medium">No actions available</span>
                                     @endif
@@ -162,6 +178,37 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<div id="rescheduleModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-black opacity-50"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 z-50">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">Reschedule Appointment</h3>
+                <button type="button" onclick="closeRescheduleModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+
+            <form id="rescheduleForm" method="POST" class="space-y-4">
+                @csrf
+                @method('PATCH')
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">New Date</label>
+                    <input type="date" name="appointment_date" id="reschedule_date" min="{{ date('Y-m-d') }}" class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-violet-400 outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">New Time</label>
+                    <input type="time" name="appointment_time" id="reschedule_time" class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-violet-400 outline-none" required>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeRescheduleModal()" class="px-4 py-2 text-gray-500 font-medium">Cancel</button>
+                    <button type="submit" class="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-xl font-bold transition-all shadow-lg shadow-violet-100">
+                        Save New Slot
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -209,6 +256,19 @@
 
 @push('scripts')
 <script>
+    function openRescheduleModal(appointmentId, date, time) {
+        document.getElementById('rescheduleForm').action = `/patient/appointments/${appointmentId}/reschedule`;
+        document.getElementById('reschedule_date').value = date;
+        document.getElementById('reschedule_time').value = time;
+        document.getElementById('rescheduleModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRescheduleModal() {
+        document.getElementById('rescheduleModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
     function openReviewModal(appId, doctorName, doctorId) {
         document.getElementById('modal_app_id').value = appId;
         document.getElementById('modal_doctor_id').value = doctorId;
@@ -224,8 +284,12 @@
 
     window.addEventListener('click', function (event) {
         const modal = document.getElementById('reviewModal');
+        const rescheduleModal = document.getElementById('rescheduleModal');
         if (event.target === modal) {
             closeReviewModal();
+        }
+        if (event.target === rescheduleModal) {
+            closeRescheduleModal();
         }
     });
 </script>

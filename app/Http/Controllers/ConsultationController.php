@@ -1,10 +1,9 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Doctor;
-use Illuminate\Http\Request;
 
 class ConsultationController extends Controller
 {
@@ -16,7 +15,7 @@ class ConsultationController extends Controller
             abort(403, 'You are not authorized to enter this room.');
         }
 
-        $roomName = "HealthHub_Live_" . md5($appointment->id . config('app.key'));
+        $roomName = 'HealthHub_Live_'.md5($appointment->id.config('app.key'));
 
         return view('common.consultation.room', compact('appointment', 'roomName'));
     }

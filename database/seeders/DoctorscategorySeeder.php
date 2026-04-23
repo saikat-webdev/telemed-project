@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class DoctorscategorySeeder extends Seeder
@@ -30,7 +28,7 @@ class DoctorscategorySeeder extends Seeder
         foreach ($categories as $category) {
             DB::table('doctor_categories')->insert([
                 'name' => $category['name'],
-                'description' => $category['name'] . ' specialists',
+                'description' => $category['name'].' specialists',
                 'status' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),

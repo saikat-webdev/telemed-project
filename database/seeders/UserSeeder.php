@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             ]
         );
         $admin->assignRole('admin');
-        
+
         // Create a patient user (only if not exists)
         $patient = User::firstOrCreate(
             ['email' => 'patient@patient.com'],
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
             ]
         );
         $patient->assignRole('patient');
-        
+
         // Create a doctor user (only if not exists)
         $doctorUser = User::firstOrCreate(
             ['email' => 'doctor@doctor.com'],

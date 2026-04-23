@@ -1,22 +1,23 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\Doctor\AppointmentController as DoctorAppointmentController;
+use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
+use App\Http\Controllers\Doctor\MessageController as DoctorMessageController;
+use App\Http\Controllers\Doctor\ProfileController as DoctorProfileController;
 use App\Http\Controllers\Patient\AppointmentController;
+use App\Http\Controllers\Patient\AppointmentreviewController;
 use App\Http\Controllers\Patient\DashboardController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Patient\MedicalHistoryController;
 use App\Http\Controllers\Patient\MessageController;
 use App\Http\Controllers\Patient\PaymentController;
 use App\Http\Controllers\Patient\SymptomCheckerController;
-use Faker\Provider\Payment;
-use App\Http\Controllers\Patient\AppointmentreviewController;
-use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
-use App\Http\Controllers\Doctor\AppointmentController as DoctorAppointmentController;
-use App\Http\Controllers\Doctor\MessageController as DoctorMessageController;
-use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\PrescriptionController;
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
-//Login & Signup Routes
+// Login & Signup Routes
 Route::get('/register', [App\Http\Controllers\LoginController::class, 'register'])->name('register.show');
 Route::post('/register', [App\Http\Controllers\LoginController::class, 'register'])->name('register');
 
@@ -25,16 +26,17 @@ Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])->n
 
 Route::post('/logout', function () {
     auth()->logout();
+
     return redirect('/login');
 })->name('logout');
 
-
-//patient routes
+// patient routes
 Route::get('/', function () {
-        if (auth()->check()) {
-            return redirect()->route('user.index');
-        }
-        return redirect()->route('login');
+    if (auth()->check()) {
+        return redirect()->route('user.index');
+    }
+
+    return redirect()->route('login');
 });
 
 Route::group(['middleware' => ['auth']], function () {
@@ -45,11 +47,16 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/patient/appointments', [AppointmentController::class, 'index'])->name('patient.appointments.index');
         Route::post('/patient/appointments', [AppointmentController::class, 'store'])->name('patient.appointments.store');
         Route::patch('/patient/appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('patient.appointments.cancel');
+        Route::patch('/patient/appointments/{appointment}/reschedule', [AppointmentController::class, 'reschedule'])->name('patient.appointments.reschedule');
         Route::get('/patient/doctors', [App\Http\Controllers\Patient\DoctorController::class, 'index'])->name('patient.doctors.index');
         Route::match(['get', 'post'], '/patient/symptom-checker', [SymptomCheckerController::class, 'index'])->name('patient.symptom-checker.index');
         Route::get('/patient/messages', [MessageController::class, 'index'])->name('patient.messages.index');
         Route::get('/patient/chat/{doctor}', [MessageController::class, 'showDoctorMsg'])->name('patient.messages.show');
         Route::post('/patient/chat/{doctor}', [MessageController::class, 'storeDoctorMsg'])->name('patient.messages.store');
+        Route::get('/patient/medical-history', [MedicalHistoryController::class, 'index'])->name('patient.medical-history.index');
+        Route::post('/patient/medical-history', [MedicalHistoryController::class, 'store'])->name('patient.medical-history.store');
+        Route::patch('/patient/medical-history/{medicalHistory}', [MedicalHistoryController::class, 'update'])->name('patient.medical-history.update');
+        Route::delete('/patient/medical-history/{medicalHistory}', [MedicalHistoryController::class, 'destroy'])->name('patient.medical-history.destroy');
 
         // stripe routes
         Route::post('/appointments/pay', [PaymentController::class, 'pay'])->name('patient.appointments.pay');
@@ -66,15 +73,22 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/doctor/messages', [DoctorMessageController::class, 'index'])->name('doctor.messages.index');
         Route::get('/doctor/chat/{patient}', [DoctorMessageController::class, 'showPatientMsg'])->name('doctor.messages.show');
         Route::post('/doctor/chat/{patient}', [DoctorMessageController::class, 'storePatientMsg'])->name('doctor.messages.store');
+        Route::get('/doctor/profile', [DoctorProfileController::class, 'edit'])->name('doctor.profile.edit');
+        Route::put('/doctor/profile', [DoctorProfileController::class, 'update'])->name('doctor.profile.update');
     });
 
-
-    //common routes
+    // common routes
     Route::get('/consultation/{appointment}/doctor', [ConsultationController::class, 'index'])->name('doctor.consultation');
     Route::get('/consultation/{appointment}/patient', [ConsultationController::class, 'index'])->name('patient.consultation');
 
     Route::get('/appointments/{appointment}/prescription/create', [PrescriptionController::class, 'create'])
-    ->name('doctor.prescription.create');
+        ->name('doctor.prescription.create');
+    Route::post('/appointments/{appointment}/prescription', [PrescriptionController::class, 'store'])
+        ->name('doctor.prescription.store');
+    Route::get('/appointments/{appointment}/prescription', [PrescriptionController::class, 'show'])
+        ->name('prescription.show');
+    Route::get('/appointments/{appointment}/prescription/download', [PrescriptionController::class, 'download'])
+        ->name('prescription.download');
 
     // ===== ADMIN ROUTES =====
     Route::group(['middleware' => ['auth', 'role:admin']], function () {

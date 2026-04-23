@@ -13,7 +13,7 @@ class AppointmentController extends \App\Http\Controllers\Controller
     public function index()
     {
         $appointments = Appointment::where('patient_id', auth()->id())
-            ->with(['doctor.category', 'transaction', 'review'])
+            ->with(['doctor.category', 'transaction', 'review', 'prescription'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -27,17 +27,17 @@ class AppointmentController extends \App\Http\Controllers\Controller
             'appointment_date' => 'required|date|after:now',
             'appointment_time' => 'required',
         ]);
-        
-        //check if the doctor is available at the given date and time
+
+        // check if the doctor is available at the given date and time
         $existingAppointment = Appointment::where('doctor_id', $request->input('doctor_id'))
             ->where('appointment_date', $request->input('appointment_date'))
             ->where('appointment_time', $request->input('appointment_time'))
-            ->whereIn('status', [0, 1, 2]) //consider only pending, confirmed, and fees paid appointments
+            ->whereIn('status', [0, 1, 2]) // consider only pending, confirmed, and fees paid appointments
             ->first();
         if ($existingAppointment) {
             return redirect()->back()->withErrors(['appointment_time' => 'The doctor is not available at the selected date and time. Please choose a different slot.'])->withInput();
         }
-        $appointment = new Appointment();
+        $appointment = new Appointment;
         $appointment->doctor_id = $request->input('doctor_id');
         $appointment->patient_id = auth()->id();
         $appointment->appointment_date = $request->input('appointment_date');
@@ -64,5 +64,46 @@ class AppointmentController extends \App\Http\Controllers\Controller
         return redirect()
             ->route('patient.appointments.index')
             ->with('success', 'Appointment cancelled successfully.');
+    }
+
+    public function reschedule(Request $request, Appointment $appointment)
+    {
+        abort_unless($appointment->patient_id === auth()->id(), 403);
+
+        if (! in_array((int) $appointment->status, [0, 1], true)) {
+            return redirect()
+                ->route('patient.appointments.index')
+                ->withErrors(['appointment' => 'Only pending or confirmed appointments can be rescheduled.']);
+        }
+
+        $validated = $request->validate([
+            'appointment_date' => 'required|date|after:now',
+            'appointment_time' => 'required',
+        ]);
+
+        $existingAppointment = Appointment::where('doctor_id', $appointment->doctor_id)
+            ->where('appointment_date', $validated['appointment_date'])
+            ->where('appointment_time', $validated['appointment_time'])
+            ->whereIn('status', [0, 1, 2])
+            ->where('id', '!=', $appointment->id)
+            ->first();
+
+        if ($existingAppointment) {
+            return redirect()
+                ->route('patient.appointments.index')
+                ->withErrors(['appointment_time' => 'That reschedule slot is already taken.']);
+        }
+
+        $appointment->update([
+            'original_appointment_date' => $appointment->original_appointment_date ?: $appointment->appointment_date,
+            'original_appointment_time' => $appointment->original_appointment_time ?: $appointment->appointment_time,
+            'appointment_date' => $validated['appointment_date'],
+            'appointment_time' => $validated['appointment_time'],
+            'rescheduled_at' => now(),
+        ]);
+
+        return redirect()
+            ->route('patient.appointments.index')
+            ->with('success', 'Appointment rescheduled successfully.');
     }
 }

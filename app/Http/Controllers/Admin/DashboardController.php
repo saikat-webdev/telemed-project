@@ -3,15 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Doctor;
 use App\Models\Appointment;
+use App\Models\Doctor;
 use App\Models\DoctorCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
+    protected function monthSelectExpression(): string
+    {
+        return Appointment::query()->getConnection()->getDriverName() === 'sqlite'
+            ? "strftime('%m', appointment_date)"
+            : 'MONTH(appointment_date)';
+    }
+
     /**
      * Display admin dashboard with analytics.
      */
@@ -37,7 +43,7 @@ class DashboardController extends Controller
             ->get();
 
         // Get monthly appointment data for chart
-        $monthlyAppointments = Appointment::selectRaw('MONTH(appointment_date) as month, COUNT(*) as count')
+        $monthlyAppointments = Appointment::selectRaw($this->monthSelectExpression().' as month, COUNT(*) as count')
             ->whereYear('appointment_date', now()->year)
             ->groupBy('month')
             ->pluck('count', 'month');
@@ -55,8 +61,8 @@ class DashboardController extends Controller
 
         // Get recent patients
         $recentPatients = User::whereHas('roles', function ($query) {
-                $query->where('name', 'patient');
-            })
+            $query->where('name', 'patient');
+        })
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
@@ -105,8 +111,8 @@ class DashboardController extends Controller
     public function patients()
     {
         $patients = User::whereHas('roles', function ($query) {
-                $query->where('name', 'patient');
-            })
+            $query->where('name', 'patient');
+        })
             ->with('appointments')
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -182,7 +188,7 @@ class DashboardController extends Controller
     public function analytics()
     {
         // Monthly appointments for the current year
-        $monthlyAppointments = Appointment::selectRaw('MONTH(appointment_date) as month, COUNT(*) as count')
+        $monthlyAppointments = Appointment::selectRaw($this->monthSelectExpression().' as month, COUNT(*) as count')
             ->whereYear('appointment_date', now()->year)
             ->groupBy('month')
             ->get()
@@ -219,6 +225,7 @@ class DashboardController extends Controller
     public function doctorCreate()
     {
         $categories = DoctorCategory::all();
+
         return view('admin.doctors.create', compact('categories'));
     }
 
@@ -247,6 +254,7 @@ class DashboardController extends Controller
     {
         $doctor = Doctor::findOrFail($id);
         $categories = DoctorCategory::all();
+
         return view('admin.doctors.edit', compact('doctor', 'categories'));
     }
 
@@ -256,7 +264,7 @@ class DashboardController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:doctors,email,' . $id,
+            'email' => 'required|email|unique:doctors,email,'.$id,
             'phone' => 'required|string',
             'specialization' => 'required|exists:doctor_categories,id',
             'fees' => 'required|numeric|min:0',
@@ -300,6 +308,7 @@ class DashboardController extends Controller
     public function categoryEdit($id)
     {
         $category = DoctorCategory::findOrFail($id);
+
         return view('admin.categories.edit', compact('category'));
     }
 
@@ -308,7 +317,7 @@ class DashboardController extends Controller
         $category = DoctorCategory::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255|unique:doctor_categories,name,' . $id,
+            'name' => 'required|string|max:255|unique:doctor_categories,name,'.$id,
             'description' => 'nullable|string',
         ]);
 
@@ -333,7 +342,7 @@ class DashboardController extends Controller
     public function patientDestroy($id)
     {
         $patient = User::findOrFail($id);
-        
+
         // Remove patient role and make inactive instead of deleting
         $patient->removeRole('patient');
         $patient->delete();

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -22,7 +22,7 @@ class LoginController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'username' => $request->username,
-                'password' => bcrypt($request->password)
+                'password' => bcrypt($request->password),
             ]);
             $user->assignRole('patient');
 
@@ -40,11 +40,11 @@ class LoginController extends Controller
             if (auth()->attempt($credentials)) {
                 // dd("User found");
                 // dd(auth()->user()->roles);
-                if(auth()->user()->hasRole('admin')){
+                if (auth()->user()->hasRole('admin')) {
                     return redirect()->route('admin.dashboard');
-                }elseif(auth()->user()->hasRole('patient')){
+                } elseif (auth()->user()->hasRole('patient')) {
                     return redirect()->route('patient.dashboard.index');
-                }elseif(auth()->user()->hasRole('doctor')){
+                } elseif (auth()->user()->hasRole('doctor')) {
                     return redirect()->route('doctor.dashboard');
                 } else {
                     return redirect()->route('user.index');

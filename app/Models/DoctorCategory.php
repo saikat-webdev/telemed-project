@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Doctor;
 
 class DoctorCategory extends Model
 {
@@ -11,8 +10,9 @@ class DoctorCategory extends Model
         'name',
         'description',
         'icon',
-        'status'
+        'status',
     ];
+
     public function doctors()
     {
         return $this->hasMany(Doctor::class);
